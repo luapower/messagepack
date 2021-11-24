@@ -421,6 +421,11 @@ function m.pack (data)
 	return tconcat(buffer)
 end
 
+function m.pack_args(...)
+	local buffer = {}
+	packers.array(buffer, {...}, select('#', ...))
+	return tconcat(buffer)
+end
 
 local unpackers         -- forward declaration
 
