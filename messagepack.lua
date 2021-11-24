@@ -167,22 +167,29 @@ packers['array'] = function (buffer, tbl, n)
 	end
 end
 
+m.N = function() end
+
 local set_array = function (array)
 	if array == 'without_hole' then
 		packers['_table'] = function (buffer, tbl)
-			local is_map, n, max = false, 0, 0
-			for k in pairs(tbl) do
-				if type(k) == 'number' and k > 0 then
-					if k > max then
-						max = k
+			local is_map, n, max = false, tbl[m.N], 0
+			if n then
+				is_map = false
+			else
+				n = 0
+				for k in pairs(tbl) do
+					if type(k) == 'number' and k > 0 then
+						if k > max then
+							max = k
+						end
+					else
+						is_map = true
 					end
-				else
+					n = n + 1
+				end
+				if max ~= n then    -- there are holes
 					is_map = true
 				end
-				n = n + 1
-			end
-			if max ~= n then    -- there are holes
-				is_map = true
 			end
 			if is_map then
 				packers['map'](buffer, tbl, n)
